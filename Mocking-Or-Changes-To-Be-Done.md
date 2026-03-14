@@ -1,0 +1,4 @@
+- Right now I am keeping Question (including options) as a String, will need to keep it more formatted like separate rendering of options etc. [doing this just to keep things simple for now, will change later]
+- DB Plan to migrate to SQL in future: I am a bit confused whether I should use some SQL DB or NoSQL, coz there are two things and both have their own tradeoffs i.e if I want system to be very good at ACID then I should go with SQL, but I don't know whether in future what will be the schema for each component (especially question, maybe the question will be containing some coding questions, so not sure, continuing with MongoDB now coz to some extent (not reliable) it is also offering ACID, but will see)
+- will add coding questions support as well
+- support for test result logs i.e how much marks each student scored in each question in the test
