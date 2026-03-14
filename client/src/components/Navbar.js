@@ -14,6 +14,24 @@ const Navbar = () => {
         <div style={styles.navRight}>
           {user ? (
             <>
+              {user.persona === 'Admin' && (
+                <>
+                  <Link to="/admin/dashboard" style={styles.navLink}>
+                    Dashboard
+                  </Link>
+                  <Link to="/admin/subjects" style={styles.navLink}>
+                    Subjects
+                  </Link>
+                  <Link to="/admin/questions" style={styles.navLink}>
+                    Questions
+                  </Link>
+                </>
+              )}
+              {user.persona === 'Student' && (
+                <Link to="/student/dashboard" style={styles.navLink}>
+                  Dashboard
+                </Link>
+              )}
               <span style={styles.userName}>
                 Welcome, {user.name} ({user.persona})
               </span>
@@ -61,9 +79,14 @@ const styles = {
   navRight: {
     display: 'flex',
     alignItems: 'center',
-    gap: '20px',
+    gap: '16px',
   },
   userName: {
+    fontSize: '14px',
+  },
+  navLink: {
+    color: 'white',
+    textDecoration: 'none',
     fontSize: '14px',
   },
   link: {

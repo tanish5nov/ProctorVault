@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config');
 const authRoutes = require('./routes/auth');
+const subjectRoutes = require('./routes/subjects');
+const questionRoutes = require('./routes/questions');
 
 const app = express();
 
@@ -18,6 +20,8 @@ connectDB();
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/subjects', subjectRoutes);
+app.use('/api/questions', questionRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

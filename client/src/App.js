@@ -7,6 +7,11 @@ import { AuthProvider } from './context/AuthContext';
 import HomePage from './pages/HomePage';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AdminDashboard from './pages/AdminDashboard';
+import StudentDashboard from './pages/StudentDashboard';
+import ManageSubjects from './pages/ManageSubjects';
+import ManageQuestions from './pages/ManageQuestions';
+import Unauthorized from './pages/Unauthorized';
 
 function App() {
   return (
@@ -23,10 +28,23 @@ function App() {
             path="/admin/dashboard"
             element={
               <PrivateRoute requiredPersona="Admin">
-                <div style={{ padding: '20px' }}>
-                  <h2>Admin Dashboard</h2>
-                  <p>Welcome to Admin Dashboard. Admin features coming soon...</p>
-                </div>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/subjects"
+            element={
+              <PrivateRoute requiredPersona="Admin">
+                <ManageSubjects />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/questions"
+            element={
+              <PrivateRoute requiredPersona="Admin">
+                <ManageQuestions />
               </PrivateRoute>
             }
           />
@@ -36,13 +54,11 @@ function App() {
             path="/student/dashboard"
             element={
               <PrivateRoute requiredPersona="Student">
-                <div style={{ padding: '20px' }}>
-                  <h2>Student Dashboard</h2>
-                  <p>Welcome to Student Dashboard. Student features coming soon...</p>
-                </div>
+                <StudentDashboard />
               </PrivateRoute>
             }
           />
+          <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* 404 Page */}
           <Route
