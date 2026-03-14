@@ -9,7 +9,7 @@ const Navbar = () => {
     <nav style={styles.navbar}>
       <div style={styles.container}>
         <Link to="/" style={styles.brand}>
-          NewEval
+          ProctorVault
         </Link>
         <div style={styles.navRight}>
           {user ? (

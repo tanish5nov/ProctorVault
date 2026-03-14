@@ -1,11 +1,12 @@
 {
-  "name": "neweval-backend",
+  "name": "proctorvault-backend",
   "version": "1.0.0",
-  "description": "MERN Stack University Examination Platform - Backend",
+  "description": "ProctorVault - University Examination Platform - Backend",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "start:proctorvault": "nodemon server.js"
   },
   "keywords": ["mern", "examination", "university"],
   "author": "",

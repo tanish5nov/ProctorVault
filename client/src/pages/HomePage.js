@@ -5,7 +5,7 @@ const HomePage = () => {
   return (
     <div style={styles.container}>
       <div style={styles.content}>
-        <h1 style={styles.title}>Welcome to NewEval</h1>
+        <h1 style={styles.title}>Welcome to ProctorVault</h1>
         <p style={styles.subtitle}>
           University Online Examination Platform
         </p>
