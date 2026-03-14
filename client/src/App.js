@@ -9,9 +9,13 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminDashboard from './pages/AdminDashboard';
 import StudentDashboard from './pages/StudentDashboard';
+import ManageStudents from './pages/ManageStudents';
 import ManageSubjects from './pages/ManageSubjects';
 import ManageQuestions from './pages/ManageQuestions';
+import ManageTests from './pages/ManageTests';
 import Unauthorized from './pages/Unauthorized';
+import TakeTest from './pages/TakeTest';
+import TestResults from './pages/TestResults';
 
 function App() {
   return (
@@ -33,6 +37,14 @@ function App() {
             }
           />
           <Route
+            path="/admin/students"
+            element={
+              <PrivateRoute requiredPersona="Admin">
+                <ManageStudents />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/admin/subjects"
             element={
               <PrivateRoute requiredPersona="Admin">
@@ -48,6 +60,22 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/admin/tests"
+            element={
+              <PrivateRoute requiredPersona="Admin">
+                <ManageTests />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/results"
+            element={
+              <PrivateRoute requiredPersona="Admin">
+                <TestResults />
+              </PrivateRoute>
+            }
+          />
 
           {/* Student Routes */}
           <Route
@@ -55,6 +83,14 @@ function App() {
             element={
               <PrivateRoute requiredPersona="Student">
                 <StudentDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/student/tests/:testId"
+            element={
+              <PrivateRoute requiredPersona="Student">
+                <TakeTest />
               </PrivateRoute>
             }
           />

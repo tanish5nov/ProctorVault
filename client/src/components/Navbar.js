@@ -19,11 +19,20 @@ const Navbar = () => {
                   <Link to="/admin/dashboard" style={styles.navLink}>
                     Dashboard
                   </Link>
+                  <Link to="/admin/students" style={styles.navLink}>
+                    Students
+                  </Link>
                   <Link to="/admin/subjects" style={styles.navLink}>
                     Subjects
                   </Link>
                   <Link to="/admin/questions" style={styles.navLink}>
                     Questions
+                  </Link>
+                  <Link to="/admin/tests" style={styles.navLink}>
+                    Tests
+                  </Link>
+                  <Link to="/admin/results" style={styles.navLink}>
+                    Results
                   </Link>
                 </>
               )}

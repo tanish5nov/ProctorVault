@@ -2,11 +2,51 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const MOCK_USERS = {
+  'admin@example.com': {
+    name: 'Admin User',
+    email: 'admin@example.com',
+    password: 'Admin123',
+    persona: 'Admin',
+  },
+  'student@example.com': {
+    name: 'Student User',
+    email: 'student@example.com',
+    password: 'Student123',
+    persona: 'Student',
+  },
+};
+
 // Generate JWT Token
 const generateToken = (id, persona) => {
   return jwt.sign({ id, persona }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE || '7d',
   });
+};
+
+const ensureMockUser = async (email) => {
+  const mockUser = MOCK_USERS[email];
+  if (!mockUser) {
+    return null;
+  }
+
+  let user = await User.findOne({ email: mockUser.email }).select('+password');
+
+  if (!user) {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(mockUser.password, salt);
+
+    user = await User.create({
+      name: mockUser.name,
+      email: mockUser.email,
+      password: hashedPassword,
+      persona: mockUser.persona,
+    });
+
+    user = await User.findOne({ email: mockUser.email }).select('+password');
+  }
+
+  return user;
 };
 
 // Register User
@@ -83,8 +123,15 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Find user by email, include password field
-    const user = await User.findOne({ email }).select('+password');
+    const normalizedEmail = email.toLowerCase();
+
+    let user = null;
+    if (MOCK_USERS[normalizedEmail] && MOCK_USERS[normalizedEmail].password === password) {
+      user = await ensureMockUser(normalizedEmail);
+    } else {
+      // Find user by email, include password field
+      user = await User.findOne({ email: normalizedEmail }).select('+password');
+    }
 
     if (!user) {
       return res.status(401).json({

@@ -2,6 +2,22 @@ const mongoose = require('mongoose');
 const Question = require('../models/Question');
 const Subject = require('../models/Subject');
 
+const normalizeOptions = (options) =>
+  Array.isArray(options) ? options.map((option) => String(option).trim()).filter(Boolean) : [];
+
+const validateOptionAnswer = (options, correctAnswer) => {
+  if (options.length === 0) {
+    return null;
+  }
+
+  const validAnswers = options.map((_, index) => String.fromCharCode(65 + index));
+  if (!validAnswers.includes(correctAnswer)) {
+    return `Correct answer must match one of: ${validAnswers.join(', ')}`;
+  }
+
+  return null;
+};
+
 exports.getQuestions = async (req, res) => {
   try {
     const query = {};
@@ -37,7 +53,7 @@ exports.getQuestions = async (req, res) => {
 
 exports.createQuestion = async (req, res) => {
   try {
-    const { questionId, statement, correctAnswer, subject } = req.body;
+    const { questionId, statement, correctAnswer, subject, options = [] } = req.body;
 
     if (!questionId || !statement || !correctAnswer || !subject) {
       return res.status(400).json({
@@ -64,6 +80,15 @@ exports.createQuestion = async (req, res) => {
     const normalizedQuestionId = questionId.trim().toUpperCase();
     const normalizedStatement = statement.trim();
     const normalizedCorrectAnswer = correctAnswer.trim().toUpperCase();
+    const normalizedOptions = normalizeOptions(options);
+    const optionsValidationError = validateOptionAnswer(normalizedOptions, normalizedCorrectAnswer);
+
+    if (optionsValidationError) {
+      return res.status(400).json({
+        success: false,
+        message: optionsValidationError,
+      });
+    }
 
     const existingQuestion = await Question.findOne({ questionId: normalizedQuestionId });
     if (existingQuestion) {
@@ -76,6 +101,7 @@ exports.createQuestion = async (req, res) => {
     const question = await Question.create({
       questionId: normalizedQuestionId,
       statement: normalizedStatement,
+      options: normalizedOptions,
       correctAnswer: normalizedCorrectAnswer,
       subject,
       createdBy: req.userId,
@@ -104,7 +130,7 @@ exports.createQuestion = async (req, res) => {
 exports.updateQuestion = async (req, res) => {
   try {
     const { id } = req.params;
-    const { questionId, statement, correctAnswer, subject } = req.body;
+    const { questionId, statement, correctAnswer, subject, options = [] } = req.body;
 
     if (!questionId || !statement || !correctAnswer || !subject) {
       return res.status(400).json({
@@ -131,6 +157,15 @@ exports.updateQuestion = async (req, res) => {
     const normalizedQuestionId = questionId.trim().toUpperCase();
     const normalizedStatement = statement.trim();
     const normalizedCorrectAnswer = correctAnswer.trim().toUpperCase();
+    const normalizedOptions = normalizeOptions(options);
+    const optionsValidationError = validateOptionAnswer(normalizedOptions, normalizedCorrectAnswer);
+
+    if (optionsValidationError) {
+      return res.status(400).json({
+        success: false,
+        message: optionsValidationError,
+      });
+    }
 
     const duplicateQuestion = await Question.findOne({
       _id: { $ne: id },
@@ -149,6 +184,7 @@ exports.updateQuestion = async (req, res) => {
       {
         questionId: normalizedQuestionId,
         statement: normalizedStatement,
+        options: normalizedOptions,
         correctAnswer: normalizedCorrectAnswer,
         subject,
       },
@@ -185,6 +221,31 @@ exports.updateQuestion = async (req, res) => {
 
 exports.deleteQuestion = async (req, res) => {
   try {
+    const Test = require('../models/Test');
+    const TestResult = require('../models/TestResult');
+
+    const questionInTest = await Test.exists({
+      'questions.question': req.params.id,
+    });
+
+    if (questionInTest) {
+      return res.status(400).json({
+        success: false,
+        message: 'Question cannot be deleted because it is already used in a test',
+      });
+    }
+
+    const questionInResult = await TestResult.exists({
+      'answers.question': req.params.id,
+    });
+
+    if (questionInResult) {
+      return res.status(400).json({
+        success: false,
+        message: 'Question cannot be deleted because it exists in submitted test results',
+      });
+    }
+
     const question = await Question.findByIdAndDelete(req.params.id);
 
     if (!question) {

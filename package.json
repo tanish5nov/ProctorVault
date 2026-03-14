@@ -1,0 +1,11 @@
+{
+  "name": "neweval",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "setup": "npm --prefix server install && npm --prefix client install",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client start",
+    "dev": "sh -c 'npm run dev:server & npm run dev:client & wait'"
+  }
+}

@@ -11,6 +11,13 @@ const AdminDashboard = () => {
         </p>
 
         <div style={styles.grid}>
+          <Link to="/admin/students" style={styles.card}>
+            <h2 style={styles.cardTitle}>Students</h2>
+            <p style={styles.cardText}>
+              Browse the student database available for assignment and monitoring.
+            </p>
+          </Link>
+
           <Link to="/admin/subjects" style={styles.card}>
             <h2 style={styles.cardTitle}>Subjects</h2>
             <p style={styles.cardText}>
@@ -25,15 +32,19 @@ const AdminDashboard = () => {
             </p>
           </Link>
 
-          <div style={styles.cardMuted}>
+          <Link to="/admin/tests" style={styles.card}>
             <h2 style={styles.cardTitle}>Tests</h2>
-            <p style={styles.cardText}>Scheduling and assignment are not built yet.</p>
-          </div>
+            <p style={styles.cardText}>
+              Schedule tests, attach questions with marks, and assign students.
+            </p>
+          </Link>
 
-          <div style={styles.cardMuted}>
+          <Link to="/admin/results" style={styles.card}>
             <h2 style={styles.cardTitle}>Results</h2>
-            <p style={styles.cardText}>Evaluation and reporting are still pending.</p>
-          </div>
+            <p style={styles.cardText}>
+              Review submitted scores, filter outcomes, and inspect answer-level details.
+            </p>
+          </Link>
         </div>
       </div>
     </div>
@@ -74,14 +85,6 @@ const styles = {
     color: 'inherit',
     boxShadow: '0 12px 30px rgba(15, 23, 42, 0.08)',
     border: '1px solid #dbe4f0',
-  },
-  cardMuted: {
-    backgroundColor: '#ffffff',
-    borderRadius: '14px',
-    padding: '24px',
-    boxShadow: '0 12px 30px rgba(15, 23, 42, 0.08)',
-    border: '1px solid #dbe4f0',
-    opacity: 0.7,
   },
   cardTitle: {
     margin: '0 0 12px',

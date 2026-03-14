@@ -15,6 +15,16 @@ const questionSchema = new mongoose.Schema(
       required: [true, 'Please provide a question statement'],
       trim: true,
     },
+    options: {
+      type: [String],
+      default: [],
+      validate: {
+        validator(options) {
+          return Array.isArray(options) && options.every((option) => typeof option === 'string' && option.trim());
+        },
+        message: 'Question options must be non-empty strings',
+      },
+    },
     correctAnswer: {
       type: String,
       required: [true, 'Please provide the correct answer'],
@@ -37,5 +47,20 @@ const questionSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+questionSchema.pre('validate', function (next) {
+  if (Array.isArray(this.options)) {
+    this.options = this.options.map((option) => option.trim()).filter(Boolean);
+  }
+
+  if (this.options.length > 0) {
+    const validAnswers = this.options.map((_, index) => String.fromCharCode(65 + index));
+    if (!validAnswers.includes(this.correctAnswer)) {
+      return next(new Error(`Correct answer must match one of: ${validAnswers.join(', ')}`));
+    }
+  }
+
+  next();
+});
 
 module.exports = mongoose.model('Question', questionSchema);

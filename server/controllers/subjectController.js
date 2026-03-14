@@ -1,4 +1,5 @@
 const Subject = require('../models/Subject');
+const Question = require('../models/Question');
 
 exports.getSubjects = async (req, res) => {
   try {
@@ -137,6 +138,15 @@ exports.updateSubject = async (req, res) => {
 
 exports.deleteSubject = async (req, res) => {
   try {
+    const questionExists = await Question.exists({ subject: req.params.id });
+
+    if (questionExists) {
+      return res.status(400).json({
+        success: false,
+        message: 'Subject cannot be deleted because questions are linked to it',
+      });
+    }
+
     const subject = await Subject.findByIdAndDelete(req.params.id);
 
     if (!subject) {

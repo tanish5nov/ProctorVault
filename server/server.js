@@ -5,6 +5,8 @@ const connectDB = require('./config');
 const authRoutes = require('./routes/auth');
 const subjectRoutes = require('./routes/subjects');
 const questionRoutes = require('./routes/questions');
+const testRoutes = require('./routes/tests');
+const studentTestRoutes = require('./routes/studentTests');
 
 const app = express();
 
@@ -22,6 +24,8 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/subjects', subjectRoutes);
 app.use('/api/questions', questionRoutes);
+app.use('/api/tests', testRoutes);
+app.use('/api', studentTestRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

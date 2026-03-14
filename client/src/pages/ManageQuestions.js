@@ -4,6 +4,7 @@ import api from '../services/api';
 const initialForm = {
   questionId: '',
   statement: '',
+  optionsText: '',
   correctAnswer: '',
   subject: '',
 };
@@ -87,12 +88,23 @@ const ManageQuestions = () => {
     setError('');
     setSuccessMessage('');
 
+    const payload = {
+      questionId: formData.questionId,
+      statement: formData.statement,
+      correctAnswer: formData.correctAnswer,
+      subject: formData.subject,
+      options: formData.optionsText
+        .split('\n')
+        .map((option) => option.trim())
+        .filter(Boolean),
+    };
+
     try {
       if (editingId) {
-        await api.put(`/questions/${editingId}`, formData);
+        await api.put(`/questions/${editingId}`, payload);
         setSuccessMessage('Question updated successfully');
       } else {
-        await api.post('/questions', formData);
+        await api.post('/questions', payload);
         setSuccessMessage('Question created successfully');
       }
 
@@ -110,6 +122,7 @@ const ManageQuestions = () => {
     setFormData({
       questionId: question.questionId,
       statement: question.statement,
+      optionsText: (question.options || []).join('\n'),
       correctAnswer: question.correctAnswer,
       subject: question.subject?._id || '',
     });
@@ -198,6 +211,17 @@ const ManageQuestions = () => {
               </div>
 
               <div style={styles.formGroup}>
+                <label style={styles.label}>Options</label>
+                <textarea
+                  name="optionsText"
+                  value={formData.optionsText}
+                  onChange={handleChange}
+                  placeholder={'One option per line\nLine 1 becomes option A\nLine 2 becomes option B'}
+                  style={styles.textarea}
+                />
+              </div>
+
+              <div style={styles.formGroup}>
                 <label style={styles.label}>Correct Answer</label>
                 <input
                   type="text"
@@ -273,6 +297,15 @@ const ManageQuestions = () => {
                   </div>
 
                   <p style={styles.statement}>{question.statement}</p>
+                  {question.options?.length > 0 && (
+                    <div style={styles.optionList}>
+                      {question.options.map((option, optionIndex) => (
+                        <div key={`${question._id}-${optionIndex}`} style={styles.optionItem}>
+                          {String.fromCharCode(65 + optionIndex)}. {option}
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   <div style={styles.cardFooter}>
                     <span style={styles.meta}>
@@ -471,6 +504,17 @@ const styles = {
     lineHeight: 1.7,
     margin: '16px 0 20px',
     whiteSpace: 'pre-wrap',
+  },
+  optionList: {
+    display: 'grid',
+    gap: '8px',
+    marginBottom: '18px',
+  },
+  optionItem: {
+    color: '#475569',
+    backgroundColor: '#f8fafc',
+    borderRadius: '10px',
+    padding: '10px 12px',
   },
   cardFooter: {
     display: 'flex',
